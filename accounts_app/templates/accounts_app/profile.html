@@ -58,7 +58,7 @@
                         maxlength="15"
                     >
                 </div>
-                
+
                 <div class="flex justify-center">
                     <button
                         type="submit"
@@ -67,8 +67,20 @@
                         Update Profile
                     </button>
                 </div>
+                
             </form>
         </div>
+            <div class="text-center mt-6"> 
+                <button
+                    hx-get="{% url 'invite_user' %}"
+                    hx-target="body"
+                    hx-swap="beforeend" 
+                    class="py-2 px-5 bg-blue-500 text-white font-medium rounded-lg shadow hover:bg-purple-600 transition"                >
+                    
+                    Invite user
+                </button>
+            </div>
+         
     </div>
 <div>
 
