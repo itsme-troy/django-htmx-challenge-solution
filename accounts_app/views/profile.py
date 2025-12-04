@@ -14,6 +14,20 @@ class ProfileView(LoginRequiredMixin, View):
         invite_user_form = InviteUserForm()
 
         if form.is_valid():
-            form.save()
+            form.save() # updates the user.
 
-        return render(request, "accounts_app/profile.html", {"form": form, "invite_user_form": invite_user_form})
+            # reload the user and re-render clean form
+            # The re-render shows correct values on screen
+            form = EditUserForm(instance=request.user)
+
+            return render(request, "accounts_app/profile.html", {
+                "form": form, 
+                "invite_user_form": invite_user_form, 
+                "updated": True,  # optional flag for UI feedback
+            })
+            # If invalid → return with errors
+        return render( request, "accounts_app/profile.html", {
+            "form": form,
+            "invite_user_form": invite_user_form
+            }
+        )

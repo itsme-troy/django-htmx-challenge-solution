@@ -12,9 +12,9 @@
         <meta name="keywords"
               content="e1+ coding challenge">
         <title>e1+ coding challenge</title>
-        <link rel="icon"
+        <!-- <link rel="icon"
               href="{% static 'images/favicon.png' %}"
-              type="image/x-icon">
+              type="image/x-icon"> -->
         <link rel="stylesheet" href="{% static 'src/styles.css' %}">
         <script src="{% static 'src/preline.js' %}"></script>
         <script src="{% static 'src/htmx.min.js' %}"></script>
@@ -41,6 +41,12 @@
                 window.HSSelect.autoInit();
                 window.HSStaticMethods.autoInit();
             })
+        </script>
+
+        <script>
+            document.body.addEventListener('htmx:configRequest', (event) => {
+                event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+            });
         </script>
     </body>
 </html>
