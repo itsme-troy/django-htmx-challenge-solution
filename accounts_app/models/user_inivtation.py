@@ -1,39 +1,58 @@
 import uuid
 
 from django.db import models
-from django.core.mail import send_mail
-from django.utils import timezone
+from django.core.mail import send_mail # Django’s built-in function for sending emails.
+from django.utils import timezone # used for time calculations.
 from django.conf import settings
 
-from .user import User
+from .user import User # custom User model.
 
-
+# Returns the expiration date for the invitation.
 def get_expiration_datetime():
     return timezone.now() + timezone.timedelta(days=settings.USER_INVITE_EXPIRATION_DAYS)
 
 
 class UserInvitation(models.Model):
-    # Must be a UUID for security reasons. UUID can not be guessed.
+    # UUID is more secure and can not be guessed compared to integer
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    # email being invited
-    email = models.EmailField(max_length=255, unique=True)
+    # Stores the email address of the invitee.
+    email = models.EmailField(
+        max_length=255, 
+        unique=True # ensures we cannot invite the same email twice
+    ) 
     
-    # who invited the user
-    invited_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    # Links the invitation to the User who sent it.
+    invited_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE # If the inviter’s account is deleted, the invitation is also deleted.
+    )
 
+    # Automatically stores the date/time the invitation was created.
     created_at = models.DateTimeField(auto_now_add=True)
     # expiration logic 
     expires_at = models.DateTimeField(default=get_expiration_datetime)
 
-    # disable email sending since its out of scope 
+    # send an invite email.
     def send_invitation_email(self):
-        # Instead of sending, we simply print the placeholder message.
-        print(f"[INVITATION GENERATED] Email: {self.email}, Token: {self.id}")
+        subject = "You have been invited to join our platform"
 
-        # send_mail(
-        #     "You have been invited to join our platform",
-        #     f"Click here to join: { settings.SENDING_DOMAIN }/invite/{self.id}",
-        #     "Kind regards, The Team",
-        #     [self.email],
-        # )
+        message = (
+            f"Hello!\n\n"
+            f"You have been invited to join our platform.\n"
+            f"Click the link below to accept your invitation:\n\n"
+            f"{settings.SENDING_DOMAIN}/invite/{self.id}\n\n"
+            f"This invite will expire on {self.expires_at}.\n\n"
+            f"Kind regards,\n"
+            f"The Team"
+        )
+
+        send_mail(
+            subject, # email title
+            message, # main text body
+            settings.DEFAULT_FROM_EMAIL, # sender address
+            [self.email], # recipient list
+            fail_silently=False, # raise an error if sending fails
+        )
+        # For demonstration purposes, we print the email content to the console.
+        print(f"[INVITATION SENT] Email: {self.email}, Token: {self.id}")

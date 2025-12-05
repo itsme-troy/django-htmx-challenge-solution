@@ -3,6 +3,7 @@ from django import forms
 from accounts_app.models import User
 
 
+# used to update users information
 class EditUserForm(forms.ModelForm):
     class Meta:
         model = User
