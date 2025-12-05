@@ -17,3 +17,9 @@ class EditUserForm(forms.ModelForm):
         help_texts = {
             "occupation": "Short (max 15 characters).",
         }
+
+    def clean_occupation(self):
+        occupation = self.cleaned_data["occupation"]
+        if len(occupation) > 15:
+            raise forms.ValidationError("Occupation must be 15 characters or fewer.")
+        return occupation

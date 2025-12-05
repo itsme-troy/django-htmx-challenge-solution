@@ -7,6 +7,11 @@ from django.conf import settings
 
 from .user import User # custom User model.
 
+from accounts_app.services.invitation_service import send_invitation
+
+import logging
+logger = logging.getLogger(__name__)
+
 # Returns the expiration date for the invitation.
 def get_expiration_datetime():
     return timezone.now() + timezone.timedelta(days=settings.USER_INVITE_EXPIRATION_DAYS)
@@ -35,24 +40,8 @@ class UserInvitation(models.Model):
 
     # send an invite email.
     def send_invitation_email(self):
-        subject = "You have been invited to join our platform"
+        # Delegate email sending to the service layer.
+        send_invitation(self)
 
-        message = (
-            f"Hello!\n\n"
-            f"You have been invited to join our platform.\n"
-            f"Click the link below to accept your invitation:\n\n"
-            f"{settings.SENDING_DOMAIN}/invite/{self.id}\n\n"
-            f"This invite will expire on {self.expires_at}.\n\n"
-            f"Kind regards,\n"
-            f"The Team"
-        )
-
-        send_mail(
-            subject, # email title
-            message, # main text body
-            settings.DEFAULT_FROM_EMAIL, # sender address
-            [self.email], # recipient list
-            fail_silently=False, # raise an error if sending fails
-        )
-        # For demonstration purposes, we print the email content to the console.
-        print(f"[INVITATION SENT] Email: {self.email}, Token: {self.id}")
+       # we print the email content to the console.
+        logger.info(f"Invitation sent to {self.email} with token {self.id}")
