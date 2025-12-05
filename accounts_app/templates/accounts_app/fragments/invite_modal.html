@@ -1,0 +1,31 @@
+<!-- INVITE MODAL WRAPPER -->
+<div id="invite_modal"
+     class="fixed inset-0 z-50 flex items-center justify-center">
+
+    <!-- dark semi-transparent background -->
+    <div class="absolute inset-0 bg-black bg-opacity-40"
+         onclick="document.getElementById('invite_modal').remove()"></div>
+
+    <!-- modal itself -->
+    <div class="relative bg-white dark:bg-neutral-900 rounded-xl shadow-xl p-6 w-full max-w-md z-10 border dark:border-neutral-700">
+
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+                Invite User
+            </h2>
+
+            <button
+                class="text-gray-600 dark:text-gray-300 hover:text-black"
+                onclick="document.getElementById('invite_modal').remove()">
+                ✕
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div id="invite_modal_body">
+            {% include "accounts_app/fragments/invite_form_fragment.html" %}
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,50 @@
+<form
+    hx-post="{% url 'invite_user' %}"
+    hx-trigger="submit"
+    hx-target="#invite_modal_body"
+    hx-swap="outerHTML"
+    method="POST"
+    class="space-y-4"
+>
+    {% csrf_token %}
+
+    
+    <!-- Instruction Message -->
+    <p class="text-gray-600 dark:text-gray-300 mb-2">
+        Enter the email address of the user you would like to invite.
+    </p>
+
+    <!-- Email Input -->
+    <div>
+        <label class="block text-sm font-medium mb-1 dark:text-white">
+            Email Address
+        </label>
+
+        {{ invite_user_form.email }}
+
+        {% if invite_user_form.email.errors %}
+            <div class="text-red-600 text-sm mt-1">
+                {{ invite_user_form.email.errors }}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex justify-end gap-2">
+
+        <button
+            type="button"
+            onclick="document.getElementById('invite_modal').remove()"
+            class="py-2 px-4 rounded-lg bg-gray-200 dark:bg-neutral-700 dark:text-neutral-300 hover:bg-gray-300"
+        >
+            Cancel
+        </button>
+
+        <button
+            type="submit"
+            class="py-2 px-4 rounded-lg bg-primary text-white hover:bg-primary-700"
+        >
+            Send Invite
+        </button>
+    </div>
+</form>
